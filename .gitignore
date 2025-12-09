@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+
+# System files
+.DS_Store
