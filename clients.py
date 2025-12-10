@@ -48,4 +48,26 @@ def chercher_client(id_clients):
         conn.close()
         return None
     
+def chercher_client_nom(nom):
+    conn=get_connection()
+    cursor=conn.cursor()
+    cursor.execute("SELECT * FROM CLIENTS WHERE NOM=?", (nom,))
+    result=cursor.fetchall()
+    if result:
+        print(" Clients trouvés :", result)
+        conn.close()
+        return result 
+        
+    else:
+        print(" Aucun client trouvé avec ce nom.")
+        conn.close()
+        return None
+    
+def supprimer_tous_clients():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM clients")
+    conn.commit()
+    conn.close()
+    print(" Tous les clients ont été supprimés !")
    
