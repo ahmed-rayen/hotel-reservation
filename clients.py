@@ -40,9 +40,12 @@ def chercher_client(id_clients):
     result=cursor.fetchone()
     if result:
         print(" Client trouvé :", result)
+        conn.close()
         return result 
+        
     else:
         print(" Client non trouvé.")
+        conn.close()
         return None
-    conn.close()
+    
    

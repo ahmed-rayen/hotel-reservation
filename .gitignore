@@ -12,3 +12,6 @@ __pycache__/
 
 # System files
 .DS_Store
+
+# IDE files
+hotel_db.py 

@@ -1,6 +1,7 @@
 from hotel_db import *
 from chambres import *
 from clients import *
+from reservation import *
 
 create_database()
 

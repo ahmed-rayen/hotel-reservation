@@ -9,7 +9,7 @@ def ajouter_chambre(num_chambre, type_chambre, prix_nuit, statut="libre"):
 
     conn.commit()
     conn.close()
-    print("✔ Chambre ajoutée !")
+    print(" Chambre ajoutée !")
 
 
 def modifier_chambre(num_chambre, type_chambre=None, prix_nuit=None, statut=None):
@@ -25,7 +25,7 @@ def modifier_chambre(num_chambre, type_chambre=None, prix_nuit=None, statut=None
 
     conn.commit()
     conn.close()
-    print("✔ Chambre modifiée !")
+    print(" Chambre modifiée !")
 
 
 def supprimer_chambre(num_chambre):
@@ -34,7 +34,7 @@ def supprimer_chambre(num_chambre):
     cursor.execute("DELETE FROM chambres WHERE num_chambre=?", (num_chambre,))
     conn.commit()
     conn.close()
-    print("✔ Chambre supprimée !")
+    print(" Chambre supprimée !")
 
 
 def afficher_chambres_libres():
