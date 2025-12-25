@@ -1,22 +1,56 @@
-from hotel_db import *
-from chambres import *
-from clients import *
-from reservation import *
+import tkinter as tk
+from tkinter import ttk
+from chambres_ui import open_chambres_window
 
-create_database()
+root = tk.Tk()
+root.title("Hotel Management System")
+root.geometry("520x380")
+root.configure(bg="#f4f6f8")
+root.resizable(False, False)
 
-ajouter_chambre(1, "simple", 80.0)
-ajouter_chambre(2, "double", 120.0)
+# ---------- Style ----------
+style = ttk.Style()
+style.theme_use("clam")
 
-modifier_chambre(1, statut="occupée")
+style.configure(
+    "Main.TButton",
+    font=("Segoe UI", 12),
+    padding=12,
+    background="#1f4e79",
+    foreground="white"
+)
+style.map("Main.TButton", background=[("active", "#163a5c")])
 
-print("Chambres libres :", afficher_chambres_libres())
-print("Chambres occupées :", afficher_chambres_occupees())
+# ---------- Title ----------
+tk.Label(
+    root,
+    text="🏨 HOTEL MANAGEMENT SYSTEM",
+    font=("Segoe UI", 18, "bold"),
+    bg="#f4f6f8",
+    fg="#1f4e79"
+).pack(pady=30)
 
-supprimer_chambre(2)
-supprimer_chambre(1)
+# ---------- Buttons ----------
+ttk.Button(
+    root,
+    text="Gestion des chambres",
+    style="Main.TButton",
+    width=30,
+    command=lambda: open_chambres_window(root)
+).pack(pady=12)
 
-ajouter_client("ahmed","barkallah","14524587")
-supprimer_client(4)
-chercher_client(5)
-supprimer_tous_clients()
+ttk.Button(
+    root,
+    text="Gestion des clients",
+    style="Main.TButton",
+    width=30
+).pack(pady=12)
+
+ttk.Button(
+    root,
+    text="Gestion des réservations",
+    style="Main.TButton",
+    width=30
+).pack(pady=12)
+
+root.mainloop()
