@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from chambres_ui import open_chambres_window
+from reservation_ui import reservation_ui
+from clients_ui import open_clients_window   # ✅ ADD THIS
 
 root = tk.Tk()
 root.title("Hotel Management System")
@@ -15,11 +17,8 @@ style.theme_use("clam")
 style.configure(
     "Main.TButton",
     font=("Segoe UI", 12),
-    padding=12,
-    background="#1f4e79",
-    foreground="white"
+    padding=12
 )
-style.map("Main.TButton", background=[("active", "#163a5c")])
 
 # ---------- Title ----------
 tk.Label(
@@ -43,14 +42,16 @@ ttk.Button(
     root,
     text="Gestion des clients",
     style="Main.TButton",
-    width=30
+    width=30,
+    command=open_clients_window    # ✅ FIXED
 ).pack(pady=12)
 
 ttk.Button(
     root,
     text="Gestion des réservations",
     style="Main.TButton",
-    width=30
+    width=30,
+    command=reservation_ui
 ).pack(pady=12)
 
 root.mainloop()
