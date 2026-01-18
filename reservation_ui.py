@@ -1,41 +1,30 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
-import sqlite3
 
 from reservation import (
     ajouter_reservation,
     modifier_reservation,
-    supprimer_reservation
+    supprimer_reservation,
+    afficher_reservations
 )
 
 BG = "#f4f6f9"
 PRIMARY = "#1e3a8a"
 
-# ---------- DB ----------
-def get_connection():
-    return sqlite3.connect("hotel.db")
 
-def get_reservations():
-    conn = get_connection()
-    cursor = conn.cursor()
-    data = cursor.execute("""
-        SELECT id_res, id_client, num_chambre, date_debut, date_fin
-        FROM reservations
-    """).fetchall()
-    conn.close()
-    return data
-
-# ---------- UI ----------
 def reservation_ui():
     win = tk.Toplevel()
     win.title("Gestion des Réservations")
     win.geometry("900x550")
     win.configure(bg=BG)
+    win.resizable(False, False)
 
     tk.Label(
-        win, text="Gestion des Réservations",
-        bg=PRIMARY, fg="white",
+        win,
+        text="Gestion des Réservations",
+        bg=PRIMARY,
+        fg="white",
         font=("Segoe UI", 18, "bold"),
         pady=15
     ).pack(fill="x")
@@ -48,18 +37,10 @@ def reservation_ui():
     entries = {}
 
     for i, label in enumerate(labels):
-        tk.Label(
-            form, text=label, bg=BG, font=("Segoe UI", 10)
-        ).grid(row=i, column=0, pady=5, sticky="w")
+        tk.Label(form, text=label, bg=BG).grid(row=i, column=0, pady=5, sticky="w")
 
         if "Date" in label:
-            e = DateEntry(
-                form,
-                width=27,
-                background="#1f4e79",
-                foreground="white",
-                date_pattern="yyyy-mm-dd"
-            )
+            e = DateEntry(form, width=27, date_pattern="yyyy-mm-dd")
         else:
             e = ttk.Entry(form, width=30)
 
@@ -82,7 +63,7 @@ def reservation_ui():
 
     def load_table():
         table.delete(*table.get_children())
-        for row in get_reservations():
+        for row in afficher_reservations():
             table.insert("", "end", values=row)
 
     load_table()
@@ -100,7 +81,6 @@ def reservation_ui():
 
         entries["ID Client"].insert(0, values[1])
         entries["Num Chambre"].insert(0, values[2])
-
         entries["Date Début"].set_date(values[3])
         entries["Date Fin"].set_date(values[4])
 
@@ -128,19 +108,26 @@ def reservation_ui():
 
         id_res = table.item(selected[0])["values"][0]
 
-        modifier_reservation(
+        ok = modifier_reservation(
             id_res,
             int(entries["ID Client"].get()),
             int(entries["Num Chambre"].get()),
             entries["Date Début"].get(),
             entries["Date Fin"].get()
         )
-        load_table()
-        messagebox.showinfo("Succès", "Réservation modifiée")
+
+        if not ok:
+            messagebox.showerror("Erreur", "Modification impossible")
+        else:
+            load_table()
+            messagebox.showinfo("Succès", "Réservation modifiée")
 
     def delete():
         selected = table.selection()
         if not selected:
+            return
+
+        if not messagebox.askyesno("Confirmation", "Supprimer cette réservation ?"):
             return
 
         id_res = table.item(selected[0])["values"][0]

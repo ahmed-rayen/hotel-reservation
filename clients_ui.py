@@ -4,14 +4,13 @@ import sqlite3
 from clients import (
     ajouter_client,
     modifier_client,
-    supprimer_client,
-    chercher_client,
-    chercher_client_nom
+    supprimer_client
 )
 
 BG = "#f4f6f9"
 PRIMARY = "#1e3a8a"
 
+# ---------- DB helpers ----------
 def get_connection():
     return sqlite3.connect("hotel.db")
 
@@ -24,15 +23,19 @@ def get_clients():
     conn.close()
     return data
 
+
 def open_clients_window():
     win = tk.Toplevel()
     win.title("Gestion des Clients")
     win.geometry("850x520")
     win.configure(bg=BG)
+    win.resizable(False, False)
 
     tk.Label(
-        win, text="Gestion des Clients",
-        bg=PRIMARY, fg="white",
+        win,
+        text="Gestion des Clients",
+        bg=PRIMARY,
+        fg="white",
         font=("Segoe UI", 18, "bold"),
         pady=15
     ).pack(fill="x")
@@ -45,9 +48,9 @@ def open_clients_window():
     entries = {}
 
     for i, field in enumerate(fields):
-        tk.Label(form, text=field, bg=BG).grid(row=i, column=0, pady=5, sticky="w")
+        tk.Label(form, text=field, bg=BG).grid(row=i, column=0, pady=6, sticky="w")
         e = ttk.Entry(form, width=30)
-        e.grid(row=i, column=1, pady=5, padx=10)
+        e.grid(row=i, column=1, pady=6, padx=10)
         entries[field] = e
 
     # ---------- Table ----------
@@ -76,7 +79,8 @@ def open_clients_window():
         selected = table.selection()
         if not selected:
             return
-        values = table.item(selected[0])["values"]
+        values = table.item(selected[0], "values")
+
         entries["Nom"].delete(0, tk.END)
         entries["Prénom"].delete(0, tk.END)
         entries["Téléphone"].delete(0, tk.END)
@@ -87,37 +91,57 @@ def open_clients_window():
 
     table.bind("<<TreeviewSelect>>", on_select)
 
+    # ---------- Utils ----------
+    def clear_inputs():
+        for e in entries.values():
+            e.delete(0, tk.END)
+
     # ---------- Actions ----------
     def add():
-        ajouter_client(
-            entries["Nom"].get(),
-            entries["Prénom"].get(),
-            entries["Téléphone"].get()
-        )
+        nom = entries["Nom"].get().strip()
+        prenom = entries["Prénom"].get().strip()
+        tel = entries["Téléphone"].get().strip()
+
+        if not nom or not prenom or not tel:
+            messagebox.showwarning("Attention", "Tous les champs sont obligatoires")
+            return
+
+        ajouter_client(nom, prenom, tel)
         load_table()
+        clear_inputs()
         messagebox.showinfo("Succès", "Client ajouté")
 
     def update():
         selected = table.selection()
         if not selected:
+            messagebox.showwarning("Attention", "Sélectionnez un client")
             return
-        id_client = table.item(selected[0])["values"][0]
+
+        id_client = table.item(selected[0], "values")[0]
+
         modifier_client(
             id_client,
-            entries["Nom"].get(),
-            entries["Prénom"].get(),
-            entries["Téléphone"].get()
+            nom=entries["Nom"].get().strip() or None,
+            prenom=entries["Prénom"].get().strip() or None,
+            telephone=entries["Téléphone"].get().strip() or None
         )
+
         load_table()
         messagebox.showinfo("Succès", "Client modifié")
 
     def delete():
         selected = table.selection()
         if not selected:
+            messagebox.showwarning("Attention", "Sélectionnez un client")
             return
-        id_client = table.item(selected[0])["values"][0]
+
+        if not messagebox.askyesno("Confirmation", "Supprimer ce client ?"):
+            return
+
+        id_client = table.item(selected[0], "values")[0]
         supprimer_client(id_client)
         load_table()
+        clear_inputs()
         messagebox.showinfo("Succès", "Client supprimé")
 
     # ---------- Buttons ----------

@@ -86,7 +86,8 @@ def open_chambres_window(parent):
             int(num_entry.get()),
             type_chambre=type_entry.get(),
             prix_nuit=float(prix_entry.get()),
-            statut=statut_entry.get()
+            statut=statut_entry.get() or None
+
         )
         refresh_all()
         messagebox.showinfo("Succès", "Chambre modifiée")

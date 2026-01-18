@@ -18,7 +18,7 @@ def modifier_chambre(num_chambre, type_chambre=None, prix_nuit=None, statut=None
 
     if type_chambre:
         cursor.execute("UPDATE chambres SET type=? WHERE num_chambre=?", (type_chambre, num_chambre))
-    if prix_nuit:
+    if prix_nuit is not None:
         cursor.execute("UPDATE chambres SET prix_nuit=? WHERE num_chambre=?", (prix_nuit, num_chambre))
     if statut:
         cursor.execute("UPDATE chambres SET statut=? WHERE num_chambre=?", (statut, num_chambre))
